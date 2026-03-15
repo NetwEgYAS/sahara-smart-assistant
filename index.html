@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sahara">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="public/manifest.json">
+<title>Sahara Smart Assistant</title>
+<style>
+:root{--bg-primary:#0a0a0a;--bg-secondary:#141414;--bg-tertiary:#1e1e1e;--bg-card:#1a1a2e;--text-primary:#e0e0e0;--text-secondary:#a0a0a0;--accent:#00d4aa;--accent-hover:#00f5c4;--accent-dim:rgba(0,212,170,0.1);--danger:#ff4757;--warning:#ffa502;--success:#2ed573;--border:#2a2a2a;--shadow:rgba(0,0,0,0.3);--msg-user:#1a3a5c;--msg-ai:#2a2a3e;--sidebar-width:260px;--header-height:56px;--transition:0.3s ease}
+.light-mode{--bg-primary:#f5f5f5;--bg-secondary:#fff;--bg-tertiary:#e8e8e8;--bg-card:#fff;--text-primary:#1a1a1a;--text-secondary:#666;--accent:#00a884;--border:#ddd;--shadow:rgba(0,0,0,0.1);--msg-user:#dcf8c6;--msg-ai:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:14px;background:var(--bg-primary);color:var(--text-primary);direction:rtl;overflow:hidden;height:100vh}
+.sidebar{position:fixed;top:0;right:0;width:var(--sidebar-width);height:100vh;background:var(--bg-secondary);border-left:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform var(--transition)}
+.sidebar-logo{padding:16px 20px;display:flex;align-items:center;gap:10px;font-size:20px;font-weight:bold;color:var(--accent);border-bottom:1px solid var(--border)}
+.sidebar-nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.nav-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border:none;background:transparent;color:var(--text-secondary);font-size:14px;font-family:inherit;border-radius:10px;cursor:pointer;transition:all var(--transition);text-align:right}
+.nav-btn:hover{background:var(--accent-dim);color:var(--accent)}
+.nav-btn.active{background:var(--accent-dim);color:var(--accent);font-weight:600}
+.nav-btn .icon{font-size:18px;min-width:24px;text-align:center}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-secondary);text-align:center}
+.header{position:fixed;top:0;left:0;right:var(--sidebar-width);height:var(--header-height);background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:90}
+.header-title{font-size:16px;font-weight:600}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--success)}.status-dot.offline{background:var(--danger)}
+.theme-toggle{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-primary);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.menu-toggle{display:none;background:none;border:none;color:var(--text-primary);font-size:24px;cursor:pointer}
+.main-content{position:fixed;top:var(--header-height);left:0;right:var(--sidebar-width);bottom:0;overflow-y:auto;padding:20px}
+.panel{display:none;height:100%}.panel.active{display:flex;flex-direction:column}
+.device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.device-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all var(--transition)}.device-card:hover{border-color:var(--accent)}
+.device-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.device-name{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.device-status{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600}
+.device-status.online{background:rgba(46,213,115,.15);color:var(--success)}.device-status.offline{background:rgba(255,71,87,.15);color:var(--danger)}.device-status.learning{background:rgba(255,165,2,.15);color:var(--warning)}.device-status.syncing{background:rgba(0,212,170,.15);color:var(--accent)}
+.device-info{display:flex;flex-direction:column;gap:10px}.info-row{display:flex;justify-content:space-between;font-size:13px}.info-label{color:var(--text-secondary)}.info-value{font-weight:500}
+.progress-bar{width:100%;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-hover));border-radius:3px;transition:width .5s}
+.device-actions{margin-top:16px;display:flex;gap:8px}
+.btn{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:var(--bg-tertiary);color:var(--text-primary);font-family:inherit;font-size:13px;cursor:pointer;transition:all var(--transition);display:flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}.btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}.btn.primary:hover{background:var(--accent-hover)}
+.chat-container{flex:1;display:flex;flex-direction:column;height:100%}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:12px}
+.message{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;word-wrap:break-word;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.message.user{align-self:flex-end;background:var(--msg-user)}.message.ai{align-self:flex-start;background:var(--msg-ai);border:1px solid var(--border)}
+.message pre{background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;overflow-x:auto;font-family:Consolas,monospace;font-size:13px;direction:ltr;text-align:left;position:relative}
+.message code{font-family:Consolas,monospace;background:var(--bg-tertiary);padding:2px 6px;border-radius:4px;font-size:13px;direction:ltr}.message pre code{background:none;padding:0}
+.copy-btn{position:absolute;top:8px;left:8px;background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);padding:4px 8px;border-radius:4px;cursor:pointer;font-size:11px}
+.chat-input-area{padding:16px 0 8px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end}
+.chat-input{flex:1;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text-primary);font-family:inherit;font-size:14px;resize:none;max-height:120px;min-height:44px;outline:none}.chat-input:focus{border-color:var(--accent)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;color:#000;font-size:18px;cursor:pointer;flex-shrink:0}.send-btn:disabled{opacity:.5}
+.typing-indicator{display:none;align-self:flex-start;padding:12px 16px;background:var(--msg-ai);border:1px solid var(--border);border-radius:16px;gap:4px}.typing-indicator.active{display:flex}
+.typing-dot{width:8px;height:8px;border-radius:50%;background:var(--text-secondary);animation:typing 1.4s infinite}.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.models-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.model-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all var(--transition)}.model-card:hover{border-color:var(--accent)}.model-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
+.model-name{font-size:16px;font-weight:600;margin-bottom:8px}.model-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:var(--accent-dim);color:var(--accent);margin-bottom:10px}.model-desc{font-size:13px;color:var(--text-secondary)}
+.backup-actions{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}.backup-list{display:flex;flex-direction:column;gap:10px}
+.backup-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;justify-content:space-between;align-items:center}.backup-date{font-weight:500}.backup-size{font-size:12px;color:var(--text-secondary)}
+.settings-section{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}.settings-title{font-size:15px;font-weight:600;margin-bottom:16px;color:var(--accent)}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.setting-row:last-child{border-bottom:none}.setting-label{font-size:13px}
+.setting-input{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-family:inherit;font-size:13px;width:240px;outline:none;direction:ltr}.setting-input:focus{border-color:var(--accent)}
+.toggle-switch{position:relative;width:44px;height:24px}.toggle-switch input{opacity:0;width:0;height:0}.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;transition:all var(--transition)}.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;right:2px;bottom:2px;background:var(--text-secondary);border-radius:50%;transition:all var(--transition)}.toggle-switch input:checked+.toggle-slider{background:var(--accent-dim);border-color:var(--accent)}.toggle-switch input:checked+.toggle-slider::before{transform:translateX(-20px);background:var(--accent)}
+.file-upload-area{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all var(--transition);margin-bottom:16px}.file-upload-area:hover{border-color:var(--accent);background:var(--accent-dim)}
+.file-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg-tertiary);border-radius:8px;font-size:13px}
+.hidden{display:none!important}
+.pve-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.pve-stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}.pve-stat-card:hover{border-color:var(--accent)}.pve-stat-icon{font-size:24px;margin-bottom:6px}.pve-stat-value{font-size:20px;font-weight:700;color:var(--accent)}.pve-stat-label{font-size:11px;color:var(--text-secondary);margin-bottom:8px}
+.pve-resource-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}.pve-resource-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px}.pve-resource-item:hover{border-color:var(--accent)}.pve-resource-info{flex:1;display:flex;flex-direction:column;gap:2px}.pve-resource-name{font-weight:600;font-size:13px}.pve-resource-meta{font-size:11px;color:var(--text-secondary);direction:ltr;text-align:right}.pve-resource-actions{display:flex;gap:6px}
+.n8n-templates-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.n8n-template-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer}.n8n-template-card:hover{border-color:var(--accent)}.n8n-template-name{font-weight:600;color:var(--accent);margin-bottom:6px}.n8n-template-desc{font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:8px}.n8n-template-meta{display:flex;gap:12px;font-size:11px;color:var(--text-secondary)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-size:13px;z-index:1000;transition:transform .3s}.toast.show{transform:translateX(-50%) translateY(0)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}.sidebar-overlay.show{display:block}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:768px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}.header{right:0}.main-content{right:0}.menu-toggle{display:block}.device-grid,.models-grid{grid-template-columns:1fr}.message{max-width:90%}.setting-input{width:160px}.pve-stats-grid{grid-template-columns:repeat(2,1fr)}.n8n-templates-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-logo"><span>🏜️</span><div>Sahara</div></div>
+<nav class="sidebar-nav">
+<button class="nav-btn active" data-panel="monitor"><span class="icon">📊</span> المراقبة</button>
+<button class="nav-btn" data-panel="chat"><span class="icon">💬</span> المساعد</button>
+<button class="nav-btn" data-panel="proxmox"><span class="icon">🖧</span> Proxmox</button>
+<button class="nav-btn" data-panel="n8n"><span class="icon">⚡</span> n8n</button>
+<button class="nav-btn" data-panel="models"><span class="icon">🧠</span> النماذج</button>
+<button class="nav-btn" data-panel="backup"><span class="icon">💾</span> النسخ الاحتياطية</button>
+<button class="nav-btn" data-panel="files"><span class="icon">📁</span> الملفات (RAG)</button>
+<button class="nav-btn" data-panel="settings"><span class="icon">⚙️</span> الإعدادات</button>
+</nav>
+<div class="sidebar-footer">Sahara Smart Solutions v2.0<br>saharasolu.com</div>
+</aside>
+
+<header class="header">
+<div style="display:flex;align-items:center;gap:12px"><button class="menu-toggle" id="menuToggle">☰</button><h1 class="header-title">Sahara Smart Assistant</h1></div>
+<div class="header-actions"><div class="header-status"><div class="status-dot" id="ollamaStatus"></div><span id="ollamaStatusText">جاري الفحص...</span></div><button class="theme-toggle" id="themeToggle">🌙</button></div>
+</header>
+
+<main class="main-content">
+<!-- Monitor -->
+<div class="panel active" id="panel-monitor"><h2 style="margin-bottom:20px">مراقبة الأجهزة</h2><div class="device-grid" id="deviceGrid"></div></div>
+
+<!-- Chat -->
+<div class="panel" id="panel-chat"><div class="chat-container"><div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border)"><span style="font-weight:600">المساعد الذكي</span><button class="btn" id="newChatBtn" style="padding:6px 14px;font-size:12px">✏️ جديدة</button></div><div class="chat-messages" id="chatMessages"><div class="message ai">مرحباً! أنا مساعد Sahara الذكي 🏜️<br>اكتب سؤالك وسأجيبك.</div></div><div class="typing-indicator" id="typingIndicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><div class="chat-input-area"><textarea class="chat-input" id="chatInput" placeholder="اكتب رسالتك..." rows="1"></textarea><button class="send-btn" id="sendBtn">➤</button></div></div></div>
+
+<!-- Proxmox -->
+<div class="panel" id="panel-proxmox">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:12px"><h2>🖧 Proxmox VE</h2><div id="pveStatus"><span class="device-status offline">جاري الفحص...</span></div></div><div style="display:flex;gap:8px"><button class="btn" onclick="saharaV2.refreshProxmox()">🔄</button><button class="btn" onclick="document.getElementById('pveSettingsPanel').classList.toggle('hidden')">⚙️</button></div></div>
+<div id="pveSettingsPanel" class="settings-section hidden"><div class="settings-title">إعدادات Proxmox</div><div class="setting-row"><span class="setting-label">IP</span><input class="setting-input" id="pveHost" value="10.0.9.10"></div><div class="setting-row"><span class="setting-label">Port</span><input type="number" class="setting-input" id="pvePort" value="8006"></div><div class="setting-row"><span class="setting-label">Node</span><input class="setting-input" id="pveNode" value="pve"></div><div class="setting-row"><span class="setting-label">Token ID</span><input class="setting-input" id="pveTokenId" placeholder="root@pam!sahara" dir="ltr"></div><div class="setting-row"><span class="setting-label">Token Secret</span><input type="password" class="setting-input" id="pveTokenSecret" dir="ltr"></div><button class="btn primary" onclick="saharaV2.saveProxmoxConfig()" style="margin-top:12px">💾 حفظ</button></div>
+<div id="pveContent"><div style="text-align:center;padding:60px;color:var(--text-secondary)"><div style="font-size:48px">🖧</div><p>جاري الاتصال...</p></div></div>
+</div>
+
+<!-- n8n -->
+<div class="panel" id="panel-n8n">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px"><div style="display:flex;align-items:center;gap:12px"><h2>⚡ n8n Workflows</h2><div id="n8nStatus"><span class="device-status offline">جاري الفحص...</span></div></div><div style="display:flex;gap:8px"><button class="btn" onclick="saharaV2.refreshN8N()">🔄</button><button class="btn" onclick="document.getElementById('n8nSettingsPanel').classList.toggle('hidden')">⚙️</button></div></div>
+<div id="n8nSettingsPanel" class="settings-section hidden"><div class="settings-title">إعدادات n8n</div><div class="setting-row"><span class="setting-label">IP</span><input class="setting-input" id="n8nHost" value="10.0.9.10"></div><div class="setting-row"><span class="setting-label">Port</span><input type="number" class="setting-input" id="n8nPort" value="5678"></div><div class="setting-row"><span class="setting-label">API Key</span><input type="password" class="setting-input" id="n8nApiKey" dir="ltr"></div><button class="btn primary" onclick="saharaV2.saveN8NConfig()" style="margin-top:12px">💾 حفظ</button></div>
+<div id="n8nContent"><div style="text-align:center;padding:60px;color:var(--text-secondary)"><div style="font-size:48px">⚡</div><p>جاري الاتصال...</p></div></div>
+<div id="n8nTemplates"></div>
+</div>
+
+<!-- Models -->
+<div class="panel" id="panel-models"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>النماذج</h2><button class="btn" id="refreshModels">🔄</button></div><div class="models-grid" id="modelsGrid"></div></div>
+
+<!-- Backup -->
+<div class="panel" id="panel-backup"><h2 style="margin-bottom:20px">النسخ الاحتياطية</h2><div class="backup-actions"><button class="btn primary" id="pullDataBtn">📥 سحب</button><button class="btn" id="pushDataBtn">📤 رفع</button><button class="btn" id="createBackupBtn">💾 نسخة جديدة</button></div><div class="backup-list" id="backupList"></div></div>
+
+<!-- Files -->
+<div class="panel" id="panel-files"><h2 style="margin-bottom:20px">الملفات (RAG)</h2><p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">ارفع ملفاتك ليتعلم منها الذكاء الاصطناعي.</p><div class="file-upload-area" id="fileUploadArea"><div style="font-size:36px">📄</div><p>اسحب أو انقر للرفع</p></div><input type="file" id="fileInput" multiple accept=".pdf,.txt,.js,.py,.json,.md,.html,.css,.ts" style="display:none"><div class="uploaded-files" id="uploadedFiles"></div></div>
+
+<!-- Settings -->
+<div class="panel" id="panel-settings"><h2 style="margin-bottom:20px">الإعدادات</h2>
+<div class="settings-section"><div class="settings-title">أوليما</div><div class="setting-row"><span class="setting-label">Host</span><input class="setting-input" id="ollamaHost" value="localhost"></div><div class="setting-row"><span class="setting-label">Port</span><input type="number" class="setting-input" id="ollamaPort" value="11434"></div><div class="setting-row"><span class="setting-label">النموذج</span><input class="setting-input" id="defaultModel" value="mistral"></div><div class="setting-row"><span class="setting-label">المهلة (ثانية)</span><input type="number" class="setting-input" id="ollamaTimeout" value="30"></div></div>
+<div class="settings-section"><div class="settings-title">المزامنة</div><div class="setting-row"><span class="setting-label">تلقائية</span><label class="toggle-switch"><input type="checkbox" id="autoSync" checked><span class="toggle-slider"></span></label></div><div class="setting-row"><span class="setting-label">كل (دقائق)</span><input type="number" class="setting-input" id="syncInterval" value="10"></div></div>
+<div class="settings-section"><div class="settings-title">النسخ الاحتياطي</div><div class="setting-row"><span class="setting-label">تلقائي</span><label class="toggle-switch"><input type="checkbox" id="autoBackup" checked><span class="toggle-slider"></span></label></div><div class="setting-row"><span class="setting-label">الاحتفاظ (أيام)</span><input type="number" class="setting-input" id="retentionDays" value="30"></div></div>
+<div class="settings-section"><div class="settings-title">الواجهة</div><div class="setting-row"><span class="setting-label">حجم الخط</span><input type="number" class="setting-input" id="fontSize" value="14" min="12" max="20"></div><div class="setting-row"><span class="setting-label">الإخطارات</span><label class="toggle-switch"><input type="checkbox" id="notifications" checked><span class="toggle-slider"></span></label></div></div>
+<button class="btn primary" id="saveSettings" style="margin-top:8px">💾 حفظ</button>
+</div>
+</main>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script src="modules/proxmox.js"></script>
+<script src="modules/n8n.js"></script>
+<script src="modules/integration.js"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/public/sw.js').catch(e=>console.log(e));</script>
+</body>
+</html>
