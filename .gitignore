@@ -1,0 +1,15 @@
+node_modules/
+.env
+data/desktop/*
+data/server/*
+data/learning/*
+backup/new/*
+backup/old/*
+logs/*
+!data/.gitkeep
+!backup/new/.gitkeep
+!backup/old/.gitkeep
+!logs/.gitkeep
+!data/desktop/.gitkeep
+!data/server/.gitkeep
+!data/learning/.gitkeep

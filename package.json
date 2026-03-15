@@ -1,0 +1,18 @@
+{
+  "name": "sahara-smart-assistant",
+  "version": "2.0.0",
+  "description": "Sahara Smart Assistant - مساعد ذكي محلي متكامل مع Proxmox و n8n",
+  "main": "app.js",
+  "scripts": {
+    "start": "npx serve -p 3000",
+    "bot": "node bot/index.js",
+    "dev": "npx serve -p 3000 --cors"
+  },
+  "keywords": ["ai", "ollama", "assistant", "proxmox", "n8n", "pwa", "telegram-bot"],
+  "author": "Sahara Smart Solutions <support@saharasolu.com>",
+  "license": "MIT",
+  "homepage": "https://saharasolu.com",
+  "dependencies": {
+    "grammy": "^1.21.0"
+  }
+}

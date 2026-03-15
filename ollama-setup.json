@@ -1,0 +1,16 @@
+{
+  "title": "دليل إعداد أوليما",
+  "installation": {
+    "windows": { "downloadUrl": "https://ollama.ai/download/windows", "startCommand": "ollama serve" },
+    "ubuntu": { "installCommand": "curl -fsSL https://ollama.ai/install.sh | sh" }
+  },
+  "models": {
+    "mistral": { "size": "3.5GB", "type": "general", "command": "ollama pull mistral:7b" },
+    "neural-chat": { "size": "4.3GB", "type": "conversational", "command": "ollama pull neural-chat:7b" },
+    "codeup": { "size": "2.7GB", "type": "coding", "command": "ollama pull codeup" }
+  },
+  "systemRequirements": {
+    "minimum": { "ram": "8GB", "storage": "20GB" },
+    "recommended": { "ram": "16GB", "storage": "100GB", "gpu": "RTX 3060+" }
+  }
+}

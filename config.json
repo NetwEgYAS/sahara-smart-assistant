@@ -1,0 +1,119 @@
+{
+  "project": {
+    "name": "Sahara Smart Assistant",
+    "version": "2.0.0",
+    "createdAt": "2025-03-13",
+    "updatedAt": "2026-03-16",
+    "description": "مساعد ذكي محلي متكامل للبرمجة والشبكات وإدارة الأنظمة مع تكامل Proxmox و n8n"
+  },
+  "network": {
+    "subnet": "10.0.9.0/24",
+    "gateway": "10.0.9.1",
+    "devices": {
+      "desktop": {
+        "name": "الكمبيوتر المكتبي",
+        "ip": "10.0.9.11",
+        "os": "Windows 11",
+        "icon": "🎮",
+        "role": "learning_node",
+        "specs": {
+          "cpu": "Intel i7-4770K",
+          "gpu": "NVIDIA RTX 3060",
+          "gpuMemory": "12GB",
+          "ram": "16GB DDR3",
+          "storage": "1TB NVMe + 1TB HDD"
+        }
+      },
+      "server": {
+        "name": "السيرفر المحلي (Proxmox)",
+        "ip": "10.0.9.10",
+        "os": "Proxmox VE 8.x",
+        "icon": "🖧",
+        "role": "master_server",
+        "specs": {
+          "cpu": "Intel i5",
+          "ram": "12GB",
+          "storage": "720GB SSD"
+        }
+      }
+    }
+  },
+  "proxmox": {
+    "enabled": true,
+    "host": "10.0.9.10",
+    "port": 8006,
+    "protocol": "https",
+    "node": "pve",
+    "tokenId": "",
+    "tokenSecret": "",
+    "refreshIntervalMs": 15000,
+    "features": {
+      "vmManagement": true,
+      "containerManagement": true,
+      "backupManagement": true,
+      "storageMonitor": true,
+      "taskMonitor": true
+    }
+  },
+  "n8n": {
+    "enabled": true,
+    "host": "10.0.9.10",
+    "port": 5678,
+    "protocol": "http",
+    "apiKey": "",
+    "refreshIntervalMs": 30000,
+    "features": {
+      "workflowManagement": true,
+      "executionMonitor": true,
+      "webhookTrigger": true,
+      "templates": true
+    }
+  },
+  "ollama": {
+    "enabled": true,
+    "host": "localhost",
+    "port": 11434,
+    "protocol": "http",
+    "models": {
+      "mistral": {
+        "name": "mistral:7b",
+        "size": "3.5GB",
+        "type": "general",
+        "usage": "البرمجة والأسئلة العامة والشروحات"
+      },
+      "neural-chat": {
+        "name": "neural-chat:7b",
+        "size": "4.3GB",
+        "type": "conversational",
+        "usage": "الحوارات الطويلة واللغة العربية"
+      },
+      "codeup": {
+        "name": "codeup",
+        "size": "2.7GB",
+        "type": "coding",
+        "usage": "كتابة الأكواد وتصحيح الأخطاء"
+      }
+    },
+    "defaultModel": "mistral",
+    "gpu": { "enabled": true, "type": "RTX 3060", "memory": "12GB" }
+  },
+  "sync": {
+    "enabled": true,
+    "intervalMs": 600000,
+    "offPeakHours": { "start": 23, "end": 6 },
+    "networkCheck": { "enabled": true, "thresholdMB": 50 },
+    "deferOnHighUsage": { "enabled": true, "deferMinutes": 60 }
+  },
+  "backup": {
+    "enabled": true,
+    "intervalMs": 86400000,
+    "retention": { "days": 30, "maxCount": 10 },
+    "paths": { "base": "backup", "new": "backup/new", "old": "backup/old" }
+  },
+  "security": {
+    "encryption": { "enabled": true, "method": "AES-256" },
+    "password": { "enabled": false },
+    "remoteAccess": { "enabled": false },
+    "ipWhitelist": ["10.0.9.0/24", "127.0.0.1"]
+  }
+}

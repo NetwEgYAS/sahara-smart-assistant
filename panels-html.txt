@@ -1,0 +1,99 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     أضف هذا الكود داخل <main class="main-content"> بعد panel-files
+     Add this inside <main class="main-content"> after panel-files
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Proxmox Panel -->
+<div class="panel" id="panel-proxmox">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <h2>🖧 Proxmox VE</h2>
+            <div id="pveStatus"><span class="device-status offline">جاري الفحص...</span></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="saharaV2.refreshProxmox()">🔄 تحديث</button>
+            <button class="btn" onclick="document.getElementById('pveSettingsPanel').classList.toggle('hidden')">⚙️ إعدادات</button>
+        </div>
+    </div>
+
+    <!-- Proxmox Settings (Hidden by default) -->
+    <div id="pveSettingsPanel" class="settings-section hidden" style="margin-bottom:16px;">
+        <div class="settings-title">إعدادات الاتصال بـ Proxmox</div>
+        <div class="setting-row">
+            <span class="setting-label">عنوان السيرفر (IP)</span>
+            <input type="text" class="setting-input" id="pveHost" value="10.0.9.10" placeholder="10.0.9.10">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">المنفذ (Port)</span>
+            <input type="number" class="setting-input" id="pvePort" value="8006">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">اسم النود (Node)</span>
+            <input type="text" class="setting-input" id="pveNode" value="pve">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">Token ID</span>
+            <input type="text" class="setting-input" id="pveTokenId" placeholder="root@pam!sahara" dir="ltr">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">Token Secret</span>
+            <input type="password" class="setting-input" id="pveTokenSecret" placeholder="xxxxxxxx-xxxx-xxxx-xxxx" dir="ltr">
+        </div>
+        <button class="btn primary" onclick="saharaV2.saveProxmoxConfig()" style="margin-top:12px;">💾 حفظ إعدادات Proxmox</button>
+        <div style="margin-top:10px;padding:10px;background:var(--bg-tertiary);border-radius:8px;font-size:11px;color:var(--text-secondary);direction:ltr;">
+            <strong>Setup:</strong> pveum user token add root@pam sahara --privsep=0
+        </div>
+    </div>
+
+    <!-- Proxmox Dashboard Content -->
+    <div id="pveContent">
+        <div style="text-align:center;padding:60px;color:var(--text-secondary);">
+            <div style="font-size:48px;margin-bottom:16px;">🖧</div>
+            <p>جاري الاتصال بـ Proxmox...</p>
+        </div>
+    </div>
+</div>
+
+<!-- n8n Panel -->
+<div class="panel" id="panel-n8n">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <h2>⚡ n8n Workflows</h2>
+            <div id="n8nStatus"><span class="device-status offline">جاري الفحص...</span></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="saharaV2.refreshN8N()">🔄 تحديث</button>
+            <button class="btn" onclick="document.getElementById('n8nSettingsPanel').classList.toggle('hidden')">⚙️ إعدادات</button>
+            <a class="btn" id="n8nOpenBtn" href="#" target="_blank" style="text-decoration:none;">🌐 فتح n8n</a>
+        </div>
+    </div>
+
+    <!-- n8n Settings (Hidden by default) -->
+    <div id="n8nSettingsPanel" class="settings-section hidden" style="margin-bottom:16px;">
+        <div class="settings-title">إعدادات الاتصال بـ n8n</div>
+        <div class="setting-row">
+            <span class="setting-label">عنوان n8n (IP)</span>
+            <input type="text" class="setting-input" id="n8nHost" value="10.0.9.10" placeholder="10.0.9.10">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">المنفذ (Port)</span>
+            <input type="number" class="setting-input" id="n8nPort" value="5678">
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">API Key</span>
+            <input type="password" class="setting-input" id="n8nApiKey" placeholder="n8n_api_..." dir="ltr">
+        </div>
+        <button class="btn primary" onclick="saharaV2.saveN8NConfig()" style="margin-top:12px;">💾 حفظ إعدادات n8n</button>
+    </div>
+
+    <!-- n8n Dashboard Content -->
+    <div id="n8nContent">
+        <div style="text-align:center;padding:60px;color:var(--text-secondary);">
+            <div style="font-size:48px;margin-bottom:16px;">⚡</div>
+            <p>جاري الاتصال بـ n8n...</p>
+        </div>
+    </div>
+
+    <!-- n8n Templates -->
+    <div id="n8nTemplates"></div>
+</div>
